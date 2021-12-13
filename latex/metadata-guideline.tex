@@ -2,48 +2,235 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{rotating}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cleveref}
+\usepackage{forest}
+\usepackage[section]{placeins}
 
 
-\title{Planning, performing, documenting and archiving measurement projects in structural engineering research}
-\author{Gunnstein T. Frøseth}
-\date{}
+\title{Guideline for documenting and archiving measurement projects
+  in structural engineering research}
+\author
+{\href{mailto:gunnstein.t.froseth@ntnu.no}{Gunnstein T. Frøseth},
+  \href{mailto:ole.oiseth@ntnu.no}{Ole Øiseth},\\
+  \href{mailto:knut.a.kvale@ntnu.no}{Knut A. Kvåle}, and
+  \href{mailto:oivind.w.petersen@ntnu.no}{Øyvind W. Petersen}\\
+  \small{Department of Structural Engineering, NTNU}
+}
+
 \begin{document}
 \thispagestyle{empty}
 \maketitle
 
 \begin{abstract}
-  This document gives a brief guideline on how to properly plan, perform, document and archive measurements such that the data acquired in the project can be used by yourself and others in the future.
+  This document gives a brief guideline on how to properly document
+  and archive measurements such that the data acquired in the project
+  can be used by yourself and others in the future. Essential metadata
+  for the project, trials and sensors are presented. The HDF5 file
+  format is suggested for implementation of the guideline.
 \end{abstract}
 
 
 \section{Introduction}
-Students, researchers and professors in civil and structural engineering field are generally required to perform several measurement projects during their career.  The objective of a measurement project is to obtain data that supports a hypothesis or improves the understanding of the world around us.  Most often the data produced in these measurement projects are acquired, analyzed and reported within a relatively short timeframe in which the researcher has control (fresh memory) of the measurement set up and environment that the project was performed in.  The researcher then continues on to the next project while the data obtained in the previous measurement project is left on some hard drive.  And metadata, such as sensor placement, objective of the project and hardware used in data acquisition, are distributed on hand written notes placed in a drawer at the office.
 
-A major issue then arises when the researcher either have to revisit the data for further analysis himself or share the data with a fellow reseachers for further investigation.  \emph{What was the orientation of that accelerometer?}  \emph{Was the thermocouple placed above or below deck?}  \emph{What was the gage factor of this strain gage?}  \emph{Which harddrive did I store the data on?!}  Oftentimes, these questions can not be answered because it was never documented properly in the first place or the relevant information is lost due to improper archiving and lack of organization.
+Researchers in structural engineering have to conduct a measurement
+project at some point in their career. The objective of a measurement
+project is to obtain data that supports a hypothesis or explores some
+idea. Typically, after aquiring, analyzing and reporting on the
+hypothesis, the data and hypothensis is then abandoned for the next
+hypothesis and measurement project. Many times, data obtained in one
+measurement project is useful in another project, e.g. if peak
+acceleration in a pedestrian bridge is obtained in project A then
+project B which seeks to determine the distribution of peak
+acceleration in all pedestrian bridges will find the data from project
+A very useful. It is also common that other researchers can exploit
+the data acquired in a project to support their work.
 
+Data produced in measurement projects are typically acquired, analyzed
+and reported within a relatively short timeframe in which the
+researcher has control (fresh memory) of the measurement set up and
+environment that the project was performed in. The project is typically
+documented on various hand written notes and short files on the
+current working directory. When the researcher continues on to the
+next project, the data is stored on some directory on some harddrive,
+while the essential metadata is left lying around on handwritten notes
+and/or on a different directory on another harddrive.
 
-There are two essential components to \emph{the data} obtained in such a measurement project: \emph{data points} and \emph{metadata}.
+A prerequisite for reusing data for other projects or for data to be
+useful to other researchers is that the data is stored and the
+measurement project is properly documented, i.e. both the data and
+metadata is archived. The distinction between data and metadata is
+made clear below:
 
-\paragraph{Data points} is the reading from a sensor, e.g. the acceleration from an accelerometer, the strain from a strain gage or the temperature from a thermocouple.  This is the component of data that most people think of when they hear \emph{data}.
-
-\paragraph{Metadata} is data about data points.  Type, sensitivity, position and orientation of an accelerometer that is used to obtain accelerations are all examples of metadata.  This is the component of data that is most often missing when you retrieve data from a fellow researcher or from a previous measurement project stashed on an old harddrive.
-
-In order to analyse and make sense of \emph{the data} it is essential that both the data points and the metadata available.
-
-
-
-These measurement projects produce data which is invaluable to the education of structural engineers and advancement of the current state of the art.  Ideally, data  Typically, measurement projects performed by one researcher will produce data which the researcher subsequently analyzes and ``archives''.
-
-Experience has shown that the researcher is generally able to obtain the data points from the structure and is able to perform a preliminary analysis of the  The following task
-must be performed in order to obtain \emph{usable} data:
 
 \begin{itemize}
-\item Planning
-\item Equipment installation
-\item
-\item
+\item \emph{Data} is the actual reading from a sensor, e.g. the
+  acceleration from an accelerometer, the strain from a strain gage or
+  the temperature from a thermometer. This is the first component of
+  the data of a measurement project that most people think of.
+
+\item \emph{Metadata} is relevant data about the data. Type, sensitivitY,
+  position and orientation of an accelerometer that is used to obtain
+  accelerations are all examples of metadata. The leader and
+  participants of the project, the location where the measurements
+  were conducted and the objective of the measurement project are also
+  examples of metadata. Metadata is the component of the measurement
+  project that is most often missing when you retrieve data from a
+  fellow researcher or from a previous measurement project.
 \end{itemize}
 
-This may sound simple enough, and it may be simple, but experience shows that researchers at all levels fail to properly
+
+Generally, it is easy to define the data in a measurement project
+because it is closely related to a finite number of easily
+identifiable sensors. On the other hand, it is much more difficult to
+define the metadata more precisely since all data about data is
+technically metadata. Another complicating factor is that metadata
+which is necessary and sufficient to one project is not sufficient
+to another project.
+
+Ideally, this document should have provided a overview of all relevant
+metadata to any measurement project. However, it is impossible and
+impractical to gather and store metadata about a project which is
+complete and sufficient for all future measurement projects. This
+document therefore only provides a recommendation of the most important and
+common pieces of metadata, i.e. essential metadata, found in
+measurement projects within structural engineering.
+
+Furthermore, this document also provides recommendations on file
+format and storage format since these aspects are essential to be able
+to access and share measurement projects with other researchers today
+and in the future.
+
+\section{Metadata - data about data}
+
+The metadata of a measurement project can be categorized into metadata about the \emph{project}, metadata about each \emph{trial}  and metadata about each \emph{sensor}.
+
+\subsection{Project metadata}
+
+The essential metadata about the measurement project aims to put the data into context such that prospective users can understand and evaluate whether the data is useful for their project. Contact information to the leader and other essential personel should be included to ensure that the user knows where more information about the project can be requested and proper attribution and credit is given. A project coordinate system should also be established to enable precise description of the placement and orientation of sensors and other spatial information in the project.
+
+
+\subsection{Trial metadata}
+
+Several trials\footnote{A trial may also be known as a run, try, experiment, test or an attempt.}  are necessary or desireable within a measurement project to explore the operational range of the system, determine the influence of different excitation, test the structure under different operational conditions or change the sensor setup to improve the observability of the system.
+
+One trial may differ significantly from another and these differences may not be measured or ``observed'' in the data. If possible, it is essential to properly describe and document the distinguising features of the trails for posteriority. Another important aspect is to be able to distinguish between different trials such that unique names should be given to each trial.
+
+
+\subsection{Sensor metadata}
+
+The essential metadata for the sensors is information that enables conversion from electrical units to physical units, e.g. sensitivity for an accelerometer or gage factor for a strain gage, and information about the spatial location and orientation of the sensor to ensure that the measured response can be associated with the correct structural member and structural behaviour, see \cref{tab:essential-metadata}. Please note that information about the temporal information must also be stored, this is can either be done by adding a stand alone dataset with sampling times to the group (a time vector) or by the start time and sampling interval for each data point in the data. 
+
+\begin{sidewaystable}[htbp!]
+  \small
+  \caption{Essential metadata for documenting a measurement project.}\label{tab:essential-metadata}
+  \centering
+  \renewcommand\arraystretch{1.5}
+  \begin{tabular}{p{0.07\linewidth}p{0.15\linewidth}p{0.4\linewidth}p{0.4\linewidth}}
+    \toprule
+    Metadata & Key & Description & Example \\
+    \midrule
+    Project & \texttt{name} & Name of the project & MeTinT - Measurement from trains in traffic. \\
+    & \texttt{contact} & Name of the main contact person for the project. Include contact info, e.g. email-address. & Gunnstein T. Frøseth \texttt{gunnstein.t.froseth@ntnu.no}, Department of Structural Engineering, NTNU, Trondheim, Norway.\\
+    & \texttt{description} & Description of the project. Include information about the over purpose, time frame and other relevant information & MeTinT is a measurement project between 2021 and 2026 where a Type 73 multiple unit, in daily service at Dovrebanen between Trondheim and Oslo, is instrumented for monitoring of the train itself and the railway infrastructure. The overall purpose is to provide data for damage detection and structural health monitorin of railway infrastructure. \\
+    & \texttt{location} & The location where the measurement system is installed. & Type 73 multiple unit operating between Trondheim and Oslo. \\
+    & \texttt{coordinate-system} & Coordinate system for the project, which is used to define the position and orientation of all other data in the project. Define the origin, type of coordinate system and the (positive) direction of the axis. & Cartesian coordinate system with origin in the center of mass of the wagon with the pantograph, x-axis defined positive towards the closest leading wagon, z-axis positive upwards and y-axis defined positive by right hand rule. \\
+  \midrule
+  Trial& \texttt{name} & Name of trial. &  lundamo-bridge-1 \\
+  & \texttt{description} & Description of the trial. Focus in particular on the distinguising features of the trial. If the trial is a product of an event, then describe what triggered the acquisition.  &  Passage of Lundamo railway bridge northbound on 2021-02-24 12:01:09. \\
+  \midrule
+  Sensor &     \texttt{name} & Name of the sensor for identification and visualization. & A10x \\
+    & \texttt{coordinate} & Coordinate of the sensor in the project coordinate system. & (13.3, 0., 3.4) \\
+    & \texttt{orientation} & Orientation of the \emph{positive direction} of the sensor in project coordinate system. &  (0, 0, 1)\\
+    & \texttt{description} & General description of sensor installation and make and serial number. Include information about how it was installed (magnet, glue, bolt) and any specification on location. & X-axis of Dytran3538A accelerometer S/N: 381. Installed on roof of train on pantograph mounting bracket with a magnet. \\
+    & \texttt{unit} & Unit of the data points that are stored. & Volt (V) \\
+    & \texttt{conversion} & How to convert the data reading, which is typically in an electrical unit (e.g. volt) into a ``spatial'' unit (e.g. g or m/s2). & 1002 mV/g \\
+  \bottomrule
+  \end{tabular}
+\end{sidewaystable}
+
+
+\section{Practical implementation}
+
+Metadata and data must be stored together to ensure that both components are properly preserved/archived for future use. There are endless ways to achieve this, but in this section a recommended approach is presented to facilitate consistency in the way that project data and metadata are archived, allow efficient use of the data and ensure a robust approach to archiving.
+
+Ideally, an approach where metadata and data can be stored and coordinated together should be used. \emph{Hierarchical Data Format Version 5} (HDF5) is a open source binary data format designed for persistant storage of big, complex and heterogeneous data. The file format is available on all operating systems and a large number of programming languages, including Fortran 90, Java, C, C++, Python and Matlab.
+
+Most importantly, the format allows for elegant handling and coordination of data and metadata. The data model for the file format is simple and revolves around two objects \texttt{Groups} and \texttt{Datasets}. The datasets can be arbitrary python objects, e.g. arrays, images, graphs or even documents, such as pdf or Excel. Groups are containers that can hold a variety of different datasets and other groups. Both groups and datasets have \texttt{attributes}, which can be used to store metadata about the object and thereby directly link up the data and the metadata.
+
+An illustration of documentation of measurement program with the HDF5 file format is given below where the file \texttt{project.h5} is a HDF5 file with the data and metadata for some project.\\
+
+\begin{forest}
+  for tree={
+    font=\ttfamily,
+    grow'=0,
+    child anchor=west,
+    parent anchor=south,
+    anchor=west,
+    calign=first,
+    edge path={
+      \noexpand\path [draw, \forestoption{edge}]
+      (!u.south west) +(7.5pt,0) |- node[fill, inner sep=1.25pt] {} (.child anchor)\forestoption{edge label};
+    },
+    before typesetting nodes={
+      if n=1
+        {insert before={[,phantom]}}
+        {}
+    },
+    fit=band,
+    before computing xy={l=15pt},
+  }
+  [Group: project.h5/
+    [\textit{name}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+    [\textit{leader}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+    [\textit{description}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+    [\textit{location}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+    [\textit{coordinate-system}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+    [Group: trial 1/
+    [\textit{name}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+    [\textit{description}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+        [Dataset: accelerometer1
+          [\textit{name}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+          [\textit{coordinate}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+          [\textit{orientation}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+          [\textit{description}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+          [\textit{unit}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+          [\textit{conversion}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+        ]
+        [\dots]
+    ]
+    [Group: trial 2/
+    [\textit{name}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+    [\textit{description}, edge path={node[fill, inner sep=0pt]}, font=\rmfamily]
+    [\dots]]
+    [\dots]
+]
+\end{forest}\\
+
+ A HDF5 file is also a group object and is refered to as the root with address \texttt{/}. In most cases, a file is only associated with a single measurement project and it is therefore appropriate to add the project metadata  (\textit{name}, \textit{leader}, \textit{description}, \textit{coordinate-system}) to the root object as attributes as shown in the figure. In cases where multiple measurement projects are included in a single HDF5 file, it is fully possible to add a project group with (metadata stored in attributes) as a subgroup of the root.
+
+Groups for trials \texttt{trial 1} and \texttt{trail 2} are shown in the figure, and each of these groups have the trial attributes (\textit{name}, \textit{description}). Within the trial groups, a dataset for the sensor \texttt{accelerometer1} is shown with the sensor metadata as attributes on the dataset.
+
+
+\section{Archiving data}
+
+Once the measurement project has been properly documented and organized, e.g. in an HDF5 file, it should be archived on a permanent storage solution. This means that the HDF5 should \emph{not} be left on a USB stick, external HDD or on a personal computer, but sent to a server designed and dedicated to archiving data. The server should as a minimum have hardware and software redundancy, and also a plan to maintain the server.
+
+There exists a plethora of commercial and free solutions for this, for those project associated with a university or research insitution, the institutional library will likely have their own arching solution or may help you in the process of archivhing the data.
+
+If you are associated with the Dynamics group (Department of Structural Engineering, NTNU), contact Gunnstein T. Frøseth about the \texttt{Munin} project which is the groups own server.
+
+\section{Conclusion}
+
+This document has presented the essential metadata for documenting a
+measurement project for future use by yourself and others. The HDF5
+file format has been recommended for practical implementation of the
+documentation of the measurement project.
+
 
 \end{document}
